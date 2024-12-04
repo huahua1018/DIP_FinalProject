@@ -20,7 +20,47 @@ def del_folder(path):
     except OSError as exc:
         pass
 
-# 下載並加載驗證集
+
+############################################# sir2+ #################################################
+SIR2p_folder = './data/SIR2+_V1/Resize_New/'  # change this to folder which has SIR2+ data
+
+SIR2p_sub_folder = ['In-the-wild_clean/', 'Indoor/', 'Outdoor/']
+root_test = './root_SIR2p_test/'              # 有反光照片
+root_gt = './root_SIR2p_gt/'                  # ground true
+del_folder(root_test)
+create_folder(root_test)
+
+del_folder(root_gt)
+create_folder(root_gt)
+
+exts = ['jpg', 'jpeg', 'png']
+folder = SIR2p_folder
+paths = []
+
+# paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+
+for sub_folder in SIR2p_sub_folder:
+    sub_folder_path = Path(folder) / sub_folder
+    paths.extend([p for ext in exts for p in sub_folder_path.glob(f'**/*.{ext}')])
+
+gt_cnt = 0
+test_cnt = 0
+for idx in range(len(paths)):
+    
+    if paths[idx].name[0] == 'r':
+        continue
+
+    print(f"Processing {gt_cnt}, {test_cnt} / {len(paths)}: {paths[idx].name}")
+    img = Image.open(paths[idx]).resize((256, 256))
+    
+    if paths[idx].name[0] == 'm':                                   # mixture.png
+        img.save(root_test + str(test_cnt) + '.png')
+        test_cnt += 1
+    elif paths[idx].name[0] == 'b' or paths[idx].name[0] == 'g':    # background.png, groundtruth.png
+        img.save(root_gt + str(gt_cnt) + '.png')
+        gt_cnt += 1
+
+############################################# place365 ###############################################
 trainset = torchvision.datasets.Places365(
     root="./data",                  # 數據集存放路徑
     split="val",                    # 指定為驗證集
@@ -46,6 +86,7 @@ for idx in range(len(paths)):
         img.save(root_train1 + str(idx) + '.png')
     else:
         img.save(root_train2 + str(idx) + '.png')
+
 
 ############################################# MNIST ###############################################
 # trainset = torchvision.datasets.MNIST(
