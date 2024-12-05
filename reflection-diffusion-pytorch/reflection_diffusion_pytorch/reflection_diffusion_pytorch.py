@@ -305,7 +305,7 @@ def cosine_beta_schedule(timesteps, s = 0.008):
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     #---------------------------------------------------
     # return torch.clip(betas, 0, 0.999)
-    return torch.clip(betas, 0, 0.8) # TODO: change to 0.8?
+    return torch.clip(betas*0.4, 0, 0.4) # TODO: change to 0.4
     #---------------------------------------------------
 
 import torch
@@ -631,7 +631,7 @@ class Trainer(object):
         update_ema_every = 10,
         #-------------------------------------
         # save_and_sample_every = 1000, # TODO: change to 100
-        save_and_sample_every = 100,
+        save_and_sample_every = 200,
         #-------------------------------------
         results_folder = './results',
         load_path = None,
