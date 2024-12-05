@@ -20,6 +20,41 @@ def del_folder(path):
     except OSError as exc:
         pass
 
+############################################# sir2 ##################################################
+SIR2_folder = './data/SIR2/'                 # change this to folder which has SIR2+ data
+
+root_test = './root_SIR2_test/'              # 有反光照片
+root_gt = './root_SIR2_gt/'                  # ground true
+del_folder(root_test)
+create_folder(root_test)
+
+del_folder(root_gt)
+create_folder(root_gt)
+
+exts = ['jpg', 'jpeg', 'png']
+folder = SIR2_folder
+paths = []
+
+paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+
+gt_cnt = 0
+test_cnt = 0
+for idx in range(len(paths)):
+    
+    if 'r' in paths[idx].name:
+        continue
+
+    print(f"Processing {gt_cnt}, {test_cnt} / {len(paths)}: {paths[idx].name}")
+    img = Image.open(paths[idx]).resize((256, 256))
+    
+    if 'm' in paths[idx].name:                              # m.xxx or xx_m_xx.xxx 
+        img.save(root_test + str(test_cnt) + '.png')
+        test_cnt += 1
+    elif 'g' in paths[idx].name:                            # g.xxx or xx_g_xx.xxx 
+        img.save(root_gt + str(gt_cnt) + '.png')
+        gt_cnt += 1
+
+# exit()
 
 ############################################# sir2+ #################################################
 SIR2p_folder = './data/SIR2+_V1/Resize_New/'  # change this to folder which has SIR2+ data

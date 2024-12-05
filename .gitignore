@@ -5,3 +5,6 @@ root_place365_val_train2/*
 
 root_SIR2p_test/*
 root_SIR2p_gt/*
+
+root_SIR2_test/*
+root_SIR2_gt/*
