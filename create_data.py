@@ -61,64 +61,64 @@ for idx in range(len(paths)):
         gt_cnt += 1
 
 ############################################# place365 ###############################################
-# trainset = torchvision.datasets.Places365(
-#     root="./data",                  # 數據集存放路徑
-#     split="val",                    # 指定為驗證集
-#     small=True,                     # 使用小尺寸圖像 (256x256)
-#     download=True,                  # 下載數據集
-# )
-# root_train1 = './root_place365_val_train1/'
-# root_train2 = './root_place365_val_train2/'
-# del_folder(root_train1)
-# create_folder(root_train1)
+trainset = torchvision.datasets.Places365(
+    root="./data",                  # 數據集存放路徑
+    split="val",                    # 指定為驗證集
+    small=True,                     # 使用小尺寸圖像 (256x256)
+    download=True,                  # 下載數據集
+)
+root_train1 = './root_place365_val_train1/'
+root_train2 = './root_place365_val_train2/'
+del_folder(root_train1)
+create_folder(root_train1)
 
-# del_folder(root_train2)
-# create_folder(root_train2)
+del_folder(root_train2)
+create_folder(root_train2)
 
-# exts = ['jpg', 'jpeg', 'png']
-# folder = './data/val_256'
-# paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+exts = ['jpg', 'jpeg', 'png']
+folder = './data/val_256'
+paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
 
-# for idx in range(len(paths)):
-#     img = Image.open(paths[idx])
-#     print(idx)
-#     if idx < 0.5*len(paths):
-#         img.save(root_train1 + str(idx) + '.png')
-#     else:
-#         img.save(root_train2 + str(idx) + '.png')
+for idx in range(len(paths)):
+    img = Image.open(paths[idx])
+    print(idx)
+    if idx < 0.5*len(paths):
+        img.save(root_train1 + str(idx) + '.png')
+    else:
+        img.save(root_train2 + str(idx) + '.png')
 
 
 ############################################# MNIST ###############################################
-trainset = torchvision.datasets.MNIST(
-            root='./data', train=True, download=True)
-root = './root_mnist/'
-del_folder(root)
-create_folder(root)
+# trainset = torchvision.datasets.MNIST(
+#             root='./data', train=True, download=True)
+# root = './root_mnist/'
+# del_folder(root)
+# create_folder(root)
 
-for i in range(10):
-    lable_root = root + str(i) + '/'
-    create_folder(lable_root)
+# for i in range(10):
+#     lable_root = root + str(i) + '/'
+#     create_folder(lable_root)
 
-for idx in range(len(trainset)):
-    img, label = trainset[idx]
-    # print(idx)
-    img.save(root + str(label) + '/' + str(idx) + '.png')
+# for idx in range(len(trainset)):
+#     img, label = trainset[idx]
+#     # print(idx)
+#     img.save(root + str(label) + '/' + str(idx) + '.png')
 
 
-trainset = torchvision.datasets.MNIST(
-            root='./data', train=False, download=True)
-root = './root_mnist_test/'
-del_folder(root)
-create_folder(root)
+# trainset = torchvision.datasets.MNIST(
+#             root='./data', train=False, download=True)
+# root = './root_mnist_test/'
+# del_folder(root)
+# create_folder(root)
 
-for i in range(10):
-    lable_root = root + str(i) + '/'
-    create_folder(lable_root)
+# for i in range(10):
+#     lable_root = root + str(i) + '/'
+#     create_folder(lable_root)
 
-for idx in range(len(trainset)):
-    img, label = trainset[idx]
-    # print(idx)
-    img.save(root + str(label) + '/' + str(idx) + '.png')
+# for idx in range(len(trainset)):
+#     img, label = trainset[idx]
+#     # print(idx)
+#     img.save(root + str(label) + '/' + str(idx) + '.png')
 
 
 ############################################# Cifar10 ###############################################
