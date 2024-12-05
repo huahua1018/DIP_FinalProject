@@ -89,36 +89,36 @@ for idx in range(len(paths)):
 
 
 ############################################# MNIST ###############################################
-# trainset = torchvision.datasets.MNIST(
-#             root='./data', train=True, download=True)
-# root = './root_mnist/'
-# del_folder(root)
-# create_folder(root)
+trainset = torchvision.datasets.MNIST(
+            root='./data', train=True, download=True)
+root = './root_mnist/'
+del_folder(root)
+create_folder(root)
 
-# for i in range(10):
-#     lable_root = root + str(i) + '/'
-#     create_folder(lable_root)
+for i in range(10):
+    lable_root = root + str(i) + '/'
+    create_folder(lable_root)
 
-# for idx in range(len(trainset)):
-#     img, label = trainset[idx]
-#     # print(idx)
-#     img.save(root + str(label) + '/' + str(idx) + '.png')
+for idx in range(len(trainset)):
+    img, label = trainset[idx]
+    # print(idx)
+    img.save(root + str(label) + '/' + str(idx) + '.png')
 
 
-# trainset = torchvision.datasets.MNIST(
-#             root='./data', train=False, download=True)
-# root = './root_mnist_test/'
-# del_folder(root)
-# create_folder(root)
+trainset = torchvision.datasets.MNIST(
+            root='./data', train=False, download=True)
+root = './root_mnist_test/'
+del_folder(root)
+create_folder(root)
 
-# for i in range(10):
-#     lable_root = root + str(i) + '/'
-#     create_folder(lable_root)
+for i in range(10):
+    lable_root = root + str(i) + '/'
+    create_folder(lable_root)
 
-# for idx in range(len(trainset)):
-#     img, label = trainset[idx]
-#     # print(idx)
-#     img.save(root + str(label) + '/' + str(idx) + '.png')
+for idx in range(len(trainset)):
+    img, label = trainset[idx]
+    # print(idx)
+    img.save(root + str(label) + '/' + str(idx) + '.png')
 
 
 ############################################# Cifar10 ###############################################
