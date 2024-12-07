@@ -22,18 +22,18 @@ def del_folder(path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--time_steps', default=50, type=int)
-parser.add_argument('--train_steps', default=700000, type=int)
+parser.add_argument('--time_steps', default=400, type=int)
+parser.add_argument('--train_steps', default=15000, type=int)
 parser.add_argument('--save_folder', default='./results', type=str)
-parser.add_argument('--data_path_start', default='../data/afhq/train/', type=str) # TODO: change to the path of the testing data
-# parser.add_argument('--data_path_end', default='../root_celebA_128_train_new/', type=str)
-parser.add_argument('--load_path', default='./save_model/Animorph.pt', type=str)
+parser.add_argument('--data_path_start', default='../root_SIR2_test/', type=str) # TODO: change to the path of the testing data
+parser.add_argument('--data_path_end', default='../root_SIR2_gt/', type=str)
+parser.add_argument('--load_path', default='./results_0.3_l2_400/model.pt', type=str)
 parser.add_argument('--train_routine', default='Final', type=str)
 parser.add_argument('--sampling_routine', default='default', type=str)
 parser.add_argument('--remove_time_embed', action="store_true")
 parser.add_argument('--residual', action="store_true")
 parser.add_argument('--loss_type', default='l1', type=str)
-parser.add_argument('--test_type', default='train_data', type=str)
+parser.add_argument('--test_type', default='test_sample_and_save_for_fid', type=str)
 parser.add_argument('--noise', default=0, type=float)
 
 
@@ -82,7 +82,8 @@ trainer = Trainer(
     fp16 = False,                       # turn on mixed precision training with apex
     results_folder = args.save_folder,
     load_path = args.load_path,
-    dataset = 'train'
+    dataset = 'test',
+    shuffle = False
 )
 
 if args.test_type == 'train_data':

@@ -305,7 +305,7 @@ def cosine_beta_schedule(timesteps, s = 0.008):
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     #---------------------------------------------------
     # return torch.clip(betas, 0, 0.999)
-    return torch.clip(betas*0.4, 0, 0.4) # TODO: change to 0.4
+    return torch.clip(betas*0.3, 0, 0.3) # TODO: change to 0.4
     #---------------------------------------------------
 
 import torch
@@ -351,7 +351,7 @@ class GaussianDiffusion(nn.Module):
         if t == None:
             t = self.num_timesteps
 
-        xt = img # TODO: use forward process
+        xt = img 
         direct_recons = None
 
         while (t):
@@ -391,9 +391,9 @@ class GaussianDiffusion(nn.Module):
         if t == None:
             t = self.num_timesteps
 
-        noise = img
+        noise = img # xt
         direct_recons = None
-        img = img + torch.randn_like(img) * noise_level
+        # img = img + torch.randn_like(img) * noise_level # TODO: delete this line
 
         while (t):
             step = torch.full((batch_size,), t - 1, dtype=torch.long, device=img.device)
@@ -415,7 +415,7 @@ class GaussianDiffusion(nn.Module):
             img = x
             t = t - 1
 
-        return noise, direct_recons, img
+        return noise, direct_recons, img #xt, direct_recons, recon_img
 
     @torch.no_grad()
     def forward_and_backward(self, batch_size=16, img1=None, img2=None, t=None, times=None, eval=True):
@@ -498,13 +498,6 @@ class GaussianDiffusion(nn.Module):
             t = t - 1
 
         return X1_0s, X_ts
-
-    def gen_reflect(self, x_start, x_end, t):
-        # reflect the image
-        return (
-                extract(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start +
-                extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * x_end
-        )
     
     def q_sample(self, x_start, x_end, t):
         # simply use the alphas to interpolate
@@ -569,8 +562,8 @@ class Dataset(data.Dataset):
         self.paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
 
         self.transform = transforms.Compose([
-            transforms.Resize((int(image_size*1.12), int(image_size*1.12))),
-            transforms.CenterCrop(image_size),
+            # transforms.Resize((int(image_size*1.12), int(image_size*1.12))),
+            # transforms.CenterCrop(image_size),
             transforms.ToTensor(),
             transforms.Lambda(lambda t: (t * 2) - 1)
         ])
@@ -583,6 +576,8 @@ class Dataset(data.Dataset):
         img = Image.open(path)
         img = img.convert('RGB')
         return self.transform(img)
+    
+
 # trainer class
 import os
 import errno
@@ -656,11 +651,13 @@ class Trainer(object):
             print(dataset, "DA used")
             self.ds1 = Dataset_Aug1(folder1, image_size)
             self.ds2 = Dataset_Aug1(folder2, image_size)
+
         else:
             print(dataset)
+            print("shuffle: ", shuffle)
             self.ds1 = Dataset(folder1, image_size)
             self.ds2 = Dataset(folder2, image_size)
-
+        
         self.dl1 = cycle(data.DataLoader(self.ds1, batch_size = train_batch_size, shuffle=shuffle, pin_memory=True, num_workers=16, drop_last=True))
         self.dl2 = cycle(data.DataLoader(self.ds2, batch_size=train_batch_size, shuffle=shuffle, pin_memory=True, num_workers=16, drop_last=True))
 
@@ -847,8 +844,9 @@ class Trainer(object):
 
         cnt = 0
         bs = self.batch_size
-        for j in range(int(6400/self.batch_size)):  # ---- 6400 is the number of images in the dataset? TODO:change? ---- #
+        for j in range(int(597/self.batch_size)):  # ---- is the number means num of test images? TODO:change? ---- #
             og_img = next(self.dl2).cuda() # TODO: change to image with reflection
+            gt = next(self.dl1)
             print(og_img.shape)
 
             xt, direct_recons, all_images = self.ema_model.module.gen_sample(batch_size=bs, img=og_img,
@@ -857,12 +855,12 @@ class Trainer(object):
             for i in range(all_images.shape[0]):
                 utils.save_image((all_images[i] + 1) * 0.5,
                                  str(f'{out_folder}/' + f'sample-x0-{cnt}.png'))
-
+                utils.save_image((gt[i] + 1) * 0.5, str(f'{out_folder}/' + f'sample-gt-{cnt}.png'))
                 # utils.save_image((xt[i] + 1) * 0.5,
-                #                  str(f'{xt_folder}/' + f'sample-x0-{cnt}.png'))
+                #                  str(f'{out_folder}/' + f'sample-xt-{cnt}.png'))
                 #
-                # utils.save_image((direct_recons[i] + 1) * 0.5,
-                #                  str(f'{direct_recons_folder}/' + f'sample-x0-{cnt}.png'))
+                utils.save_image((direct_recons[i] + 1) * 0.5,
+                                 str(f'{out_folder}/' + f'sample-direct-{cnt}.png'))
 
                 cnt += 1
 
