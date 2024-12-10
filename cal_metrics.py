@@ -82,19 +82,19 @@ def save_metrics_to_csv(metrics, filename="metrics_list.csv"):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--root_gt', '-r_gt', default='./reflection-diffusion-pytorch/results', type = str)         #TODO: change this to gt image dir path
-parser.add_argument('--root_recon', '-r_recon', default='./reflection-diffusion-pytorch/results', type = str)   #TODO: change this to recon image dir path
+parser.add_argument('--root_gt', '-r_gt', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500', type = str)         #TODO: change this to gt image dir path
+parser.add_argument('--root_recon', '-r_recon', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500', type = str)   #TODO: change this to recon image dir path
 parser.add_argument('--direct', '-d', default=False, type = bool)
-parser.add_argument('--output_filename', '-o', default='./metrics_list.csv', type = str)                        #TODO: change this to output path + filename
+parser.add_argument('--output_filename', '-o', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500/metrics_list.csv', type = str)                        #TODO: change this to output path + filename
 args = parser.parse_args()
 root_gt_path = args.root_gt
 root_recon_path = args.root_recon
 
-condition1 = lambda filename: "sample-og-" in filename.lower()                  #TODO: change this to filenname format of gt-image
+condition1 = lambda filename: "sample-gt-" in filename.lower()                  #TODO: change this to filenname format of gt-image
 if not args.direct:
-    condition2 = lambda filename: "sample-recon-" in filename.lower()           #TODO: change this to filenname format of reconstructed image
+    condition2 = lambda filename: "sample-x0-" in filename.lower()           #TODO: change this to filenname format of reconstructed image
 else:
-    condition2 = lambda filename: "sample-direct_recons-" in filename.lower()   #TODO: change this to filenname format of direct reconstructed image
+    condition2 = lambda filename: "sample-direct-" in filename.lower()   #TODO: change this to filenname format of direct reconstructed image
 
 images_original, images_reconstructed = split_and_sort(root_gt_path, root_recon_path, condition1, condition2)
 metrics = calculate_psnr_ssim(images_original, images_reconstructed)

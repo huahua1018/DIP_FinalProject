@@ -844,7 +844,7 @@ class Trainer(object):
 
         cnt = 0
         bs = self.batch_size
-        for j in range(int(597/self.batch_size)):  # ---- is the number means num of test images? TODO:change? ---- #
+        for j in range(int(597/self.batch_size)):  # ---- is the number means num of test images? TODO:change? ----   ---------------- to 500# 
             og_img = next(self.dl2).cuda() # TODO: change to image with reflection
             gt = next(self.dl1)
             print(og_img.shape)
