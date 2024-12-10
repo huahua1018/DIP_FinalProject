@@ -16,7 +16,7 @@ import config
 hyper_params = { # TODO
     'train1_size': 12, #5
     'train2_size': 12, #125
-    'input_size': (3, 128, 128),
+    'input_size': (3, 256, 256),
     'batch_size': 4,
     'num_epochs': 10,
     'learning_rate': 0.01
