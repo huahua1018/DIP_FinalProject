@@ -8,14 +8,15 @@ import torch as th
 import cv2
 import random
 
-MAX_INDOOR = 15000
-MAX_OUTDOOR = 2700
+MAX_INDOOR = 18250 #TODO change to our data root_place365_val_train1 len
+MAX_OUTDOOR = 18250 #TODO change to our data root_place365_val_train2 len
 
 
 class ImageDataSet(Dataset):
-    def __init__(self, t_len=MAX_INDOOR, r_len=MAX_OUTDOOR, alpha=0.75, first_ref_pos=(0, 6), second_ref_pos=(6, 0), blur=5, random=True):
-        self.t_path = './data/indoor'
-        self.r_path = './data/outdoor'
+    def __init__(self, t_len=MAX_INDOOR, r_len=MAX_OUTDOOR, alpha=0.3, first_ref_pos=(0, 6), second_ref_pos=(6, 0), blur=0, random=True):
+    # TODO change alpha=0.3 blur=0 
+        self.t_path = '../root_place365_val_train1' # TODO
+        self.r_path = '../root_place365_val_train2'# TODO
         self.t_len = t_len
         self.r_len = r_len
         self.random = random
@@ -38,20 +39,20 @@ class ImageDataSet(Dataset):
     def __len__(self):
         return self.t_len * self.r_len
 
-    def __basic_crop(self, img, seed): # Image -> Image
-        img_array = np.array(img)
-        quot = min(img_array.shape[0], img_array.shape[1]) / 360
-        if quot > 1:
-            img = img.resize(
+    def __basic_crop(self, img, seed): # Image -> Image #TODO
+        #img_array = np.array(img)
+        #quot = min(img_array.shape[0], img_array.shape[1]) / 360
+        #if quot > 1:
+        #    img = img.resize(
                 (int(img_array.shape[1] / quot), int(img_array.shape[0] / quot)))
-        random.seed(seed)
-        crop = thv.transforms.RandomCrop(134)
-        return crop(img)
-
-    def __crop128(self, img):  # np.ndarray -> np.ndarray
-        if img.shape[2] == 3:
-            return img[3:131, 3:131]
-        return img[:, 3:131, 3:131]
+        #random.seed(seed)
+        #crop = thv.transforms.RandomCrop(256)
+        #return crop(img)
+        rreturn img
+    def __crop128(self, img):  # np.ndarray -> np.ndarray#TODO
+        #if img.shape[2] == 3:
+         #   return img[3:259, 3:259]
+        return img
 
     def __get_img(self, id, path, seed):  # id (n, m, c) -> np.ndarray (c, n, m)
         img = Image.open('{}/{}.jpg'.format(path, id))
