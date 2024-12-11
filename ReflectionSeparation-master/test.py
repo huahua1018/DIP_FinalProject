@@ -56,6 +56,7 @@ def test(test_loader, model, criterion, path):
        # print("target_transmission",target_transmission)
         #print("target_reflection",target_reflection)
         #print("batch",batch)
+        
         ### 一道GPU上
         device = th.device("cuda" if th.cuda.is_available() else "cpu")
 
@@ -64,40 +65,49 @@ def test(test_loader, model, criterion, path):
 
         # 確保 features 在相同的設備上
         features = features.to(device)
-        output = model(features)
-        print("output ",output.shape)  # 查看模型輸出的結構
+        # output = model(features)
+        # print("output ",output.shape)  # 查看模型輸出的結構
 
-        # 假設 output 是你的張量，形狀為 [8, 3, 256, 256]
-        output = output.detach().cpu()  # 分離梯度並移到 CPU
-        output = output.permute(0, 2, 3, 1).numpy()  # 轉為 [Batch, Height, Width, Channel]
-        #output  torch.Size([8, 3, 256, 256]) 推測為圖片 但數值都是0
-        # 顯示圖片
-        num_images = output.shape[0]
-        fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
+        # # 假設 output 是你的張量，形狀為 [8, 3, 256, 256]
+        # output = output.detach().cpu()  # 分離梯度並移到 CPU
+        # output = output.permute(0, 2, 3, 1).numpy()  # 轉為 [Batch, Height, Width, Channel]
+        # #output  torch.Size([8, 3, 256, 256]) 推測為圖片 但數值都是0
+        # # 顯示圖片
+        # num_images = output.shape[0]
+        # fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
 
-        for i in range(num_images):
-            img = output[i]  # 取得第 i 張圖片
-            if img.max() == img.min():  # 檢查是否有分母為 0 的情況
-                print("max==min ",img.min())
-                print("max==min ",img.shape)
-                img = img / 255.0  # 如果所有像素相同，直接歸一化
-            else:
-                img = (img - img.min()) / (img.max() - img.min())  # 正規化到 [0, 1]
-            axes[i].imshow(img)
-            axes[i].axis('off')  # 隱藏座標軸
-            plt.show()
+        # for i in range(num_images):
+        #     img = output[i]  # 取得第 i 張圖片
+        #     if img.max() == img.min():  # 檢查是否有分母為 0 的情況
+        #         print("max==min ",img.min())
+        #         print("max==min ",img.shape)
+        #         img = img / 255.0  # 如果所有像素相同，直接歸一化
+        #     else:
+        #         img = (img - img.min()) / (img.max() - img.min())  # 正規化到 [0, 1]
+        #     axes[i].imshow(img)
+        #     axes[i].axis('off')  # 隱藏座標軸
+        #     plt.show()
 
 #########以下輸出跟model.py給的也不太依樣
-        predict_transmission, predict_reflection = model(features)
-
+        # predict_transmission, predict_reflection = model(features)
+        
+        # TODO yu ------------------------------
+        predict_transmission = model(features)
+        # --------------------------------------
+        
         ###
-       # predict_transmission, predict_reflection = model(features)
+        # predict_transmission, predict_reflection = model(features)
         if i < 1:
             print("-------------------------------")
-            a = (np.transpose(predict_transmission[0].detach().numpy(), (1, 2, 0)) * 255).astype(int)
-            b = (np.transpose(target_transmission[0].detach().numpy(), (1, 2, 0)) * 255).astype(int)
-            print(a - b)
-            print(predict_transmission[0] - target_transmission[0])
+            # TODO yu ---------------------------------------------------------------------------------------
+            a = (np.transpose(predict_transmission[0].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(int)
+            b = (np.transpose(target_transmission[0].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(int)
+            # -----------------------------------------------------------------------------------------------
+            
+            # a = (np.transpose(predict_transmission[0].detach().numpy(), (1, 2, 0)) * 255).astype(int)
+            # b = (np.transpose(target_transmission[0].detach().numpy(), (1, 2, 0)) * 255).astype(int)
+            # print(a - b)
+            # print(predict_transmission[0] - target_transmission[0])
 
             '''
             writer = open("hello.txt", 'w')
@@ -106,15 +116,30 @@ def test(test_loader, model, criterion, path):
                     print(a[i][j][0], file=writer)
             '''
             print("-------------------------------")
-            
+        
+        # TODO yu-------------------------------------------------
+        predict_transmission = predict_transmission.to(device)
+        target_transmission = target_transmission.to(device)
+        # ---------------------------------------------------------
         for j in range(predict_transmission.shape[0]):    # TODO: check this
-            cv2.imwrite(path + "/target_trans" + str(i) + ".png", (np.transpose(target_transmission[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
-            cv2.imwrite(path + "/transmission" + str(i) + ".png", (np.transpose(predict_transmission[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
-            cv2.imwrite(path + "/reflection" + str(i) + ".png", (np.transpose(predict_reflection[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
+
+            # TODO yu-------------------------------------------------
+            cv2.imwrite(path + "/transmission" + str(i) + ".png", 
+            (np.transpose(predict_transmission[j].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(int))
+            cv2.imwrite(path + "/target_trans" + str(i) + ".png", 
+            (np.transpose(target_transmission[j].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(int))
+            # ---------------------------------------------------------
+            # cv2.imwrite(path + "/target_trans" + str(i) + ".png", (np.transpose(target_transmission[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
+            # cv2.imwrite(path + "/transmission" + str(i) + ".png", (np.transpose(predict_transmission[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
+            # cv2.imwrite(path + "/reflection" + str(i) + ".png", (np.transpose(predict_reflection[j].detach().numpy(), (1, 2, 0)) * 255).astype(int))
 
         loss1 = criterion(predict_transmission, target_transmission)
-        loss2 = criterion(predict_reflection, target_reflection)
-        loss = loss1 + loss2
+        # TODO yu-----------------------------------------------------
+        loss = loss1
+
+        # loss2 = criterion(predict_reflection, target_reflection)
+        # loss = loss1 + loss2
+        # ------------------------------------------------------------
         losses.append(loss.item())
         print(loss1.item())
         step += 1
@@ -128,8 +153,10 @@ if __name__ == "__main__":
     del_folder(path)
     create_folder(path)
 
-
-    data = dtst.ImageDataSet(hyper_params['train1_size'], hyper_params['train2_size'])
+    # todo yu ---------------------------------------------------------------------------------------
+    data = dtst.ImageDataSet(hyper_params['train1_size'], hyper_params['train2_size'], test = True)
+    # data = dtst.ImageDataSet(hyper_params['train1_size'], hyper_params['train2_size'])
+    # -----------------------------------------------------------------------------------------------
     test_loader = dtst.DataLoader(data, 1, 11, test=True)# TODO　亂數每次都找９個　所以這邊先18->11
 
     #net = NetArticle()

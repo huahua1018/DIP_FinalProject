@@ -10,15 +10,18 @@ import random
 
 MAX_INDOOR = 18250 #TODO change to our data root_place365_val_train1 len
 MAX_OUTDOOR = 18250 #TODO change to our data root_place365_val_train2 len
-
+TEST_LEN = 499 # TODO yu
 
 class ImageDataSet(Dataset):
-    def __init__(self, t_len=MAX_INDOOR, r_len=MAX_OUTDOOR, alpha=0.3, first_ref_pos=(0, 6), second_ref_pos=(6, 0), blur=0, random=True):
+    def __init__(self, t_len=MAX_INDOOR, r_len=MAX_OUTDOOR, alpha=0.3, first_ref_pos=(0, 6), second_ref_pos=(6, 0), blur=0, random=True, test = False):
     # TODO change alpha=0.3 blur=0 
         self.t_path = '../root_place365_val_train1' # TODO
         self.r_path = '../rename_root_place365_val_train2'# TODO
+        self.test_path = '../root_SIR2_test' # TODO yu
+        self.test = test  # TODO yu
         self.t_len = t_len
         self.r_len = r_len
+        self.test_len = TEST_LEN   # TODO yu
         self.random = random
 
         self.alpha = alpha
@@ -37,6 +40,10 @@ class ImageDataSet(Dataset):
         self.blur = np.random.choice([1, 3, 5, 7, 9])
 
     def __len__(self):
+        # TODO YU --------------------------------------------------------
+        if test:
+            return self.test_len
+        # ----------------------------------------------------------------
         return self.t_len * self.r_len
 
     def __basic_crop(self, img, seed): # Image -> Image #TODO
@@ -92,6 +99,18 @@ class ImageDataSet(Dataset):
         return (1 - alpha1 - alpha2), reflection
 
     def __getitem__(self, id):
+        # TODO YU --------------------------------------------------------
+        if self.test:
+            img = Image.open('{}/{}.png'.format(self.test_path, id % self.test_len))
+            img = img.convert('RGB')
+            img = np.array(img)
+            features_img = np.transpose(img, (2, 0, 1))
+            item = np.array([features_img, features_img, features_img])
+            item = th.Tensor(item / 255)
+            return item
+        # ----------------------------------------------------------------
+        
+        
         if self.random:
             self.__random_prop(id)
 
@@ -104,6 +123,8 @@ class ImageDataSet(Dataset):
         k, reflection_layer = self.__add_reflection(reflection_blur)
         features_img = k*transition_crop + reflection_layer
 
+
+        
         item = np.array([features_img, transition_crop, reflection_layer])
         item = th.Tensor(item / 255)
         #item = th.Tensor(item)
@@ -111,6 +132,9 @@ class ImageDataSet(Dataset):
 
 class DataLoader():
     def __init__(self, dataset, transition_num=1, reflection_num=11, seed=23, split=0.8, random=False, batch_size=4, test=False):#TODO　change reflection_num to 11 need<=data len (train_size in train.py)
+        # TODO yu -------------------------       
+        self.test = test
+        # ---------------------------------
         self.dataset = dataset
         self.seed = seed
         self.transition_num = transition_num
@@ -144,6 +168,10 @@ class DataLoader():
             
 
     def __len__(self):
+        # TODO yu -----------------------------------
+        if self.test:
+            return dataset.test_len
+        # ------------------------------------------
         t_len = len(self.transition_permutation)
         r_len = len(self.reflection_permutation)
         if self.random:

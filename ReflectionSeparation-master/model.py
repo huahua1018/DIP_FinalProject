@@ -118,6 +118,6 @@ class NetArticle(nn.Module):
         intro_end = self.intro(x)
         body_end = self.body(intro_end)
         transmission = self.head1(body_end)
-        #reflection = self.head2(body_end)
+        # reflection = self.head2(body_end)
         return transmission#, reflection
 
