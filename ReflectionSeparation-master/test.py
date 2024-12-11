@@ -9,6 +9,7 @@ import cv2
 import os
 import errno
 import shutil
+import matplotlib.pyplot as plt
 
 
 
@@ -50,7 +51,47 @@ def test(test_loader, model, criterion, path):
     step = 0
     for i, batch in enumerate(test_loader):
         features, target_transmission, target_reflection = get_batch(batch)
+##TODO g輸出奇怪不確定是否為目前train量不夠
+      #  print("features",features)
+       # print("target_transmission",target_transmission)
+        #print("target_reflection",target_reflection)
+        #print("batch",batch)
+        ### 一道GPU上
+        device = th.device("cuda" if th.cuda.is_available() else "cpu")
+
+        # 確保模型在正確設備上
+        model = model.to(device)
+
+        # 確保 features 在相同的設備上
+        features = features.to(device)
+        output = model(features)
+        print("output ",output.shape)  # 查看模型輸出的結構
+
+        # 假設 output 是你的張量，形狀為 [8, 3, 256, 256]
+        output = output.detach().cpu()  # 分離梯度並移到 CPU
+        output = output.permute(0, 2, 3, 1).numpy()  # 轉為 [Batch, Height, Width, Channel]
+        #output  torch.Size([8, 3, 256, 256]) 推測為圖片 但數值都是0
+        # 顯示圖片
+        num_images = output.shape[0]
+        fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
+
+        for i in range(num_images):
+            img = output[i]  # 取得第 i 張圖片
+            if img.max() == img.min():  # 檢查是否有分母為 0 的情況
+                print("max==min ",img.min())
+                print("max==min ",img.shape)
+                img = img / 255.0  # 如果所有像素相同，直接歸一化
+            else:
+                img = (img - img.min()) / (img.max() - img.min())  # 正規化到 [0, 1]
+            axes[i].imshow(img)
+            axes[i].axis('off')  # 隱藏座標軸
+            plt.show()
+
+#########以下輸出跟model.py給的也不太依樣
         predict_transmission, predict_reflection = model(features)
+
+        ###
+       # predict_transmission, predict_reflection = model(features)
         if i < 1:
             print("-------------------------------")
             a = (np.transpose(predict_transmission[0].detach().numpy(), (1, 2, 0)) * 255).astype(int)
@@ -89,10 +130,10 @@ if __name__ == "__main__":
 
 
     data = dtst.ImageDataSet(hyper_params['train1_size'], hyper_params['train2_size'])
-    test_loader = dtst.DataLoader(data, 1, 18, test=True)
+    test_loader = dtst.DataLoader(data, 1, 11, test=True)# TODO　亂數每次都找９個　所以這邊先18->11
 
     #net = NetArticle()
-    net = th.load("weights3.hdf5") # TODO
+    net = th.load("first_test.hdf5") # TODO
     criterion = nn.MSELoss()
     losses = test(test_loader, net, criterion, path)
     print('####', losses)

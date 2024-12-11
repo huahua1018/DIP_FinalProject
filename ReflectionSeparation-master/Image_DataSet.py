@@ -16,7 +16,7 @@ class ImageDataSet(Dataset):
     def __init__(self, t_len=MAX_INDOOR, r_len=MAX_OUTDOOR, alpha=0.3, first_ref_pos=(0, 6), second_ref_pos=(6, 0), blur=0, random=True):
     # TODO change alpha=0.3 blur=0 
         self.t_path = '../root_place365_val_train1' # TODO
-        self.r_path = '../root_place365_val_train2'# TODO
+        self.r_path = '../rename_root_place365_val_train2'# TODO
         self.t_len = t_len
         self.r_len = r_len
         self.random = random
@@ -44,18 +44,18 @@ class ImageDataSet(Dataset):
         #quot = min(img_array.shape[0], img_array.shape[1]) / 360
         #if quot > 1:
         #    img = img.resize(
-                (int(img_array.shape[1] / quot), int(img_array.shape[0] / quot)))
+             #   (int(img_array.shape[1] / quot), int(img_array.shape[0] / quot)))
         #random.seed(seed)
         #crop = thv.transforms.RandomCrop(256)
         #return crop(img)
-        rreturn img
+        return img
     def __crop128(self, img):  # np.ndarray -> np.ndarray#TODO
         #if img.shape[2] == 3:
          #   return img[3:259, 3:259]
         return img
 
     def __get_img(self, id, path, seed):  # id (n, m, c) -> np.ndarray (c, n, m)
-        img = Image.open('{}/{}.jpg'.format(path, id))
+        img = Image.open('{}/{}.png'.format(path, id))
         img = img.convert('RGB')
         img = self.__basic_crop(img, seed)
         img = np.array(img)
@@ -85,7 +85,8 @@ class ImageDataSet(Dataset):
         if isinstance(reflection_img, np.ndarray):
             reflection_img = th.Tensor(reflection_img)
 
-        reflection = F.conv2d(reflection_img, th.Tensor(kernel), groups=3)
+       # reflection = F.conv2d(reflection_img, th.Tensor(kernel), groups=3)
+        reflection = F.conv2d(reflection_img, th.Tensor(kernel), groups=3, padding=3)#TODO　chamge paddnf to 3 去符合256256
         reflection = reflection.numpy().squeeze()
 
         return (1 - alpha1 - alpha2), reflection
@@ -109,16 +110,26 @@ class ImageDataSet(Dataset):
         return item
 
 class DataLoader():
-    def __init__(self, dataset, transition_num=1, reflection_num=18, seed=23, split=0.8, random=False, batch_size=4, test=False):
+    def __init__(self, dataset, transition_num=1, reflection_num=11, seed=23, split=0.8, random=False, batch_size=4, test=False):#TODO　change reflection_num to 11 need<=data len (train_size in train.py)
         self.dataset = dataset
         self.seed = seed
         self.transition_num = transition_num
-        self.reflection_num = reflection_num
+        self.reflection_num = int(reflection_num*0.8)
         self.random = random
         self.batch_size = batch_size
+      #  print("self ",self.dataset)
+       # print("seed ",self.seed)
+        #print("transition_num ",self.transition_num)
+        #print("reflection_num ",self.reflection_num)
+        #print("random ",self.random)
+        #print("batch_size ",self.batch_size)
+
 
         t_split = int(dataset.t_len * split)
+      #  print("dataset.t_len" ,dataset.t_len)
+      #  print("dataset.t_len split" ,dataset.t_len*(split))
         r_split = int(dataset.r_len * split)
+        #print("dataset.t_len" ,dataset.t_len)
 
         if not test:
             np.random.seed(self.seed)
@@ -130,6 +141,7 @@ class DataLoader():
             self.transition_permutation = np.random.permutation(self.dataset.t_len)[t_split:]
             np.random.seed(self.seed)
             self.reflection_permutation = np.random.permutation(self.dataset.r_len)[r_split:]
+            
 
     def __len__(self):
         t_len = len(self.transition_permutation)
@@ -141,7 +153,12 @@ class DataLoader():
     def __get_batch(self, id):
         stack = []
         np.random.seed(id)
-        r_split = np.random.randint(len(self.reflection_permutation) - self.reflection_num)
+        #print(">>> ",len(self.reflection_permutation))
+        #print(">>> ",self.reflection_permutation)
+        #print(">> ",self.reflection_num)
+        r_split = np.random.randint(len(self.reflection_permutation) - self.reflection_num) #TODO 根種子有關直接會導致相減為負，先用ａｂｓ？ 目前是強制調train test 丟進的值
+        #reflection_num 顧忌要再調整 不然他每次 reflection_num都只有8
+        #print("\n\n r_split",r_split)
         for t_id in self.transition_permutation[id*self.transition_num : (id+1)*self.transition_num]:
             for r_id in self.reflection_permutation[r_split : r_split + self.reflection_num]:
                 data_id = self.dataset.r_len * t_id + r_id

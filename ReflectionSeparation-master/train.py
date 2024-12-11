@@ -7,15 +7,15 @@ import torch.optim as optim
 from model import NetArticle
 import Image_DataSet as dtst
 
-import config
+#import config
 
 
 # experiment = Experiment(api_key=config.comet_ml_api,
 #                         project_name="reflection-separation", workspace="wibbn")
 
 hyper_params = { # TODO
-    'train1_size': 12, #5
-    'train2_size': 12, #125
+    'train1_size': 1000, #5
+    'train2_size': 1000, #125
     'input_size': (3, 256, 256),
     'batch_size': 4,
     'num_epochs': 10,
@@ -59,7 +59,7 @@ def train(train_loader, model, criterion, optimizer, epochs=hyper_params['num_ep
             step += 1
             losses.append(loss.item())
             if save:
-                th.save(model, 'weights3.hdf5')
+                th.save(model, 'first_test.hdf5')#TODO 
         print('epoch end', sum(losses))
     return losses
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     device = th.device("cuda")
     print(device)
     data = dtst.ImageDataSet(hyper_params['train1_size'], hyper_params['train2_size'])
-    train_loader = dtst.DataLoader(data, 1, 18)
+    train_loader = dtst.DataLoader(data, 1, 11)##TODO third is reflection_num val it cant be bigger than train1_size
 
     net = NetArticle().to(device)
     criterion = nn.MSELoss()
