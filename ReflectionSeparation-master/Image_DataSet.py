@@ -123,15 +123,13 @@ class ImageDataSet(Dataset):
         k, reflection_layer = self.__add_reflection(reflection_blur)
         features_img = k*transition_crop + reflection_layer
 
-
-        
         item = np.array([features_img, transition_crop, reflection_layer])
         item = th.Tensor(item / 255)
         #item = th.Tensor(item)
         return item
 
 class DataLoader():
-    def __init__(self, dataset, transition_num=1, reflection_num=11, seed=23, split=0.8, random=False, batch_size=4, test=False):#TODO　change reflection_num to 11 need<=data len (train_size in train.py)
+    def __init__(self, dataset, transition_num=1, reflection_num=18, seed=23, split=0.8, random=False, batch_size=4, test=False):#TODO　change reflection_num to 11 need<=data len (train_size in train.py)
         # TODO yu -------------------------       
         self.test = test
         # ---------------------------------
@@ -179,14 +177,22 @@ class DataLoader():
         return t_len // self.transition_num
 
     def __get_batch(self, id):
+        # stack = []
+        # np.random.seed(id)
+        # #print(">>> ",len(self.reflection_permutation))
+        # #print(">>> ",self.reflection_permutation)
+        # #print(">> ",self.reflection_num)
+        # r_split = np.random.randint(len(self.reflection_permutation) - self.reflection_num) #TODO 根種子有關直接會導致相減為負，先用ａｂｓ？ 目前是強制調train test 丟進的值
+        # #reflection_num 顧忌要再調整 不然他每次 reflection_num都只有8
+        # #print("\n\n r_split",r_split)
+        # for t_id in self.transition_permutation[id*self.transition_num : (id+1)*self.transition_num]:
+        #     for r_id in self.reflection_permutation[r_split : r_split + self.reflection_num]:
+        #         data_id = self.dataset.r_len * t_id + r_id
+        #         stack.append(self.dataset[data_id])
+        # return stack
         stack = []
         np.random.seed(id)
-        #print(">>> ",len(self.reflection_permutation))
-        #print(">>> ",self.reflection_permutation)
-        #print(">> ",self.reflection_num)
-        r_split = np.random.randint(len(self.reflection_permutation) - self.reflection_num) #TODO 根種子有關直接會導致相減為負，先用ａｂｓ？ 目前是強制調train test 丟進的值
-        #reflection_num 顧忌要再調整 不然他每次 reflection_num都只有8
-        #print("\n\n r_split",r_split)
+        r_split = np.random.randint(len(self.reflection_permutation) - self.reflection_num)
         for t_id in self.transition_permutation[id*self.transition_num : (id+1)*self.transition_num]:
             for r_id in self.reflection_permutation[r_split : r_split + self.reflection_num]:
                 data_id = self.dataset.r_len * t_id + r_id

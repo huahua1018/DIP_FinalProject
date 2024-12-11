@@ -3,3 +3,5 @@
 data/
 *.ipynb*
 __pycache__
+results/*
+train_results/*
