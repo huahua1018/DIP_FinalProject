@@ -44,60 +44,117 @@ class NetArticle(nn.Module):
 
     def intro(self, x):
         x = self.conv_intro_1(x)
-        #x = F.relu(x)
+        
+        # todo yu ---------------
+        x = F.relu(x)
+        # ------------------------
+        
         x = self.conv_intro_2(x)
-        #x = F.relu(x)
+        
+        # todo yu ---------------
+        x = F.relu(x)
+        # ------------------------
+
         x = self.conv_intro_3(x)
         x = F.relu(x)
         x = self.conv_intro_4(x)
-        #x = F.relu(x)
+        
+        # todo yu ---------------
+        x = F.relu(x)
+        # ------------------------
+
         x = self.conv_intro_5(x)
-        #x = F.relu(x)
+        
+        # todo yu ---------------
+        x = F.relu(x)
+        # ------------------------
+
         x = self.conv_intro_6(x)
         x = F.relu(x)
         return x
 
     def body(self, x):
         legacy1 = self.conv_down_1(x)
-        #legacy1 = F.relu(legacy1)
+        
+        # todo yu ---------------
+        legacy1 = F.relu(legacy1)
+        # ------------------------
+
         legacy1 = self.conv_down_2(legacy1)
         legacy1 = F.relu(legacy1)   # shape is 32
         legacy2 = self.conv_down_3(legacy1)
-        #legacy2 = F.relu(legacy2)
+        
+        # todo yu ---------------
+        legacy2 = F.relu(legacy2)
+        # ------------------------
+
         legacy2 = self.conv_down_4(legacy2)
         legacy2 = F.relu(legacy2)   # shape is 64
         legacy3 = self.conv_down_5(legacy2)
-        #legacy3 = F.relu(legacy3)
+        
+        # todo yu ---------------
+        legacy3 = F.relu(legacy3)
+        # ------------------------
+
         legacy3 = self.conv_down_6(legacy3)
         legacy3 = F.relu(legacy3)   # shape is 128 (actually we needn't legacy3)
         up = self.conv_up_1(legacy3)
-        #up = F.relu(up)
+        
+        # todo yu ---------------
+        up = F.relu(up)
+        # ------------------------
+
         up = self.conv_up_2(up)
         up = F.relu(up)
         up = self.conv_up_3(legacy2 + up)
-        #up = F.relu(up)
+        
+        # todo yu ---------------
+        up = F.relu(up)
+        # ------------------------
+
         up = self.conv_up_4(up)
         up = F.relu(up)
         up = self.conv_up_5(legacy1 + up)
-        #up = F.relu(up)
+        
+        # todo yu ----------------
+        up = F.relu(up)
+        # ------------------------
+        
         up = self.conv_up_6(up)
         up = F.relu(x - up)
         return up
 
+    # def head1(self, x):
+    #     x = self.conv_head1_1(x)
+    #     #x = F.relu(x)
+    #     x = self.conv_head1_2(x)
+    #     x = F.relu(x)
+    #     x = self.conv_head1_3(x)
+    #     #x = F.relu(x)
+    #     x = self.conv_head1_4(x)
+    #     x = F.relu(x)
+    #     x = self.conv_head1_5(x)
+    #     #x = F.relu(x)
+    #     x = self.conv_head1_6(x)
+    #     x = F.relu(x)
+    #     return x
+
+    # todo yu ----------------
     def head1(self, x):
         x = self.conv_head1_1(x)
-        #x = F.relu(x)
+        x = F.relu(x)
         x = self.conv_head1_2(x)
         x = F.relu(x)
         x = self.conv_head1_3(x)
-        #x = F.relu(x)
+        x = F.relu(x)
         x = self.conv_head1_4(x)
         x = F.relu(x)
         x = self.conv_head1_5(x)
-        #x = F.relu(x)
+        x = F.relu(x)
         x = self.conv_head1_6(x)
         x = F.relu(x)
         return x
+    # ------------------------
 
     def head2(self, x):
         x = self.conv_head2_1(x)
