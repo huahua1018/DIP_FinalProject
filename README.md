@@ -43,8 +43,8 @@ Then, run the command `python create_data.py`.
 ### Hyperparameters
 
 * β : 0.3
-* loss_type : l1
-* time_steps : 200
+* loss_type : l2
+* time_steps : 100
 * train_steps : 45000
 
 First, you need to navigate to the folder where our code is located in order to execute the train and test commands.
