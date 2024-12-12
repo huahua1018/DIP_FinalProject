@@ -11,6 +11,41 @@ import os
 import errno
 import shutil
 import matplotlib.pyplot as plt
+from torchvision.models import vgg16
+
+class VGGLoss(nn.Module):
+    def __init__(self, layer='relu3_3'):
+        super(VGGLoss, self).__init__()
+        # 載入 VGG16 的預訓練模型
+        vgg = vgg16(pretrained=True).features
+        # 提取到指定的層，例如 'relu3_3' 對應第 16 層
+        if layer == 'relu3_3':
+            self.feature_extractor = nn.Sequential(*list(vgg.children())[:16])
+        elif layer == 'relu4_3':
+            self.feature_extractor = nn.Sequential(*list(vgg.children())[:23])
+        else:
+            raise ValueError("Unsupported layer")
+        
+        # 凍結 VGG 模型參數
+        for param in self.feature_extractor.parameters():
+            param.requires_grad = False
+        
+        self.criterion = nn.MSELoss()
+
+    def forward(self, generated, target):
+        # VGG 輸入要求範圍 [0, 1] 並正規化
+        mean = th.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).to(generated.device)
+        std = th.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).to(generated.device)
+        generated = (generated - mean) / std
+        target = (target - mean) / std
+
+        # 計算生成圖與目標圖的 VGG 特徵
+        gen_features = self.feature_extractor(generated)
+        target_features = self.feature_extractor(target)
+
+        # 使用 MSE 計算特徵圖的損失
+        loss = self.criterion(gen_features, target_features)
+        return loss
 
 
 def create_folder(path):
@@ -38,8 +73,8 @@ hyper_params = { # TODO
     'train2_size': 25, #125
     'input_size': (3, 256, 256),
     'batch_size': 4,
-    'num_epochs': 10,
-    'learning_rate': 0.001
+    'num_epochs': 1,
+    'learning_rate': 0.0005
 }
 
 def get_batch(batch):
@@ -137,8 +172,9 @@ if __name__ == "__main__":
     train_loader = dtst.DataLoader(data, 1, 11)##TODO third is reflection_num val it cant be bigger than train1_size
 
     net = NetArticle().to(device)
-    criterion = nn.MSELoss()
+    ##TODO rong 
+    #criterion = nn.MSELoss()
+    criterion = VGGLoss(layer='relu3_3').to(device)
     optimizer = optim.Adam(net.parameters(), lr=hyper_params['learning_rate'])
     losses = train(train_loader, net, criterion, optimizer)
     print(losses)
-

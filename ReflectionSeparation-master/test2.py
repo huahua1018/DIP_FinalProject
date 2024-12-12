@@ -148,7 +148,7 @@ if __name__ == "__main__":
     # test_loader = dtst.DataLoader(data, 1, 11, test=True)# TODO　亂數每次都找９個　所以這邊先18->11
 
     #net = NetArticle()
-    net = th.load("first_test.hdf5") # TODO
+    net = th.load("s_test.hdf5") # TODO
     # print(net)
     criterion = nn.MSELoss()
     losses = test(net, criterion, path)
