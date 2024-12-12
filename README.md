@@ -17,12 +17,12 @@ Inspired by the [Cold-Diffusion](https://github.com/arpitbansal297/Cold-Diffusio
 ## Setup and Preparation Process
 ### Step 1 : Environment Setup
 
-### 1. Use conda (Optimal)
+#### 1. Use conda (Optimal)
 ```
 conda env create -f requirements.yml 
 ```
 
-### 2. Use pip
+#### 2. Use pip
 ```
 pip install -r environment.txt
 ```
