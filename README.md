@@ -33,7 +33,8 @@ Download the [SIR2](https://sir2data.github.io/) dataset and place it in the `da
 
 Then, run the command `python create_data.py`.
 
-## Hyperparameters
+## Execution
+### Hyperparameters
 
 * β : 0.3
 * loss_type : l1
