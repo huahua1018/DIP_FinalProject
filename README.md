@@ -26,6 +26,36 @@ conda env create -f requirements.yml
 pip install -r environment.txt
 ```
 
+## Hyperparameters
+
+* β : 0.3
+* loss_type : l1
+* time_steps : 200
+* train_steps : 45000
+
+First, you need to navigate to the folder where our code is located in order to execute the train and test commands.
+
+```
+cd reflection-diffusion-pytorch                        
+```
+
+### Train
+
+```
+python reflection_removal.py --save_folder <Path to save images>                    
+```
+
+### Test
+
+```
+python reflection_removal_test.py --save_folder <Path to save images> --load_path <Path to load model>                
+```
+
+
+## Experiment results
+
+![Experiment results](results.png)
+
 ## Usage
 Reflection removal is a crucial task in various computer vision and image processing applications. 
 Some common applications of reflection removal include:
@@ -33,11 +63,3 @@ Some common applications of reflection removal include:
 * **Autonomous driving** : Removing reflections from windshield or window images enhances the clarity and accuracy of scene understanding, ensuring safer navigation.
 * **Medical image analysis** : Eliminating reflections from imaging devices or glass barriers improves the visibility of critical details, facilitating more accurate diagnoses and evaluations.
   
-## Hyperparameters
-
-### Train
-
-### Test
-
-
-## Experiment results

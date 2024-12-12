@@ -24,7 +24,7 @@ def del_folder(path):
 parser = argparse.ArgumentParser()
 parser.add_argument('--time_steps', default=200, type=int)
 parser.add_argument('--train_steps', default=45000, type=int)
-parser.add_argument('--save_folder', default='./results_0.3_l1_200_45000', type=str)
+parser.add_argument('--save_folder', default='./results', type=str)
 parser.add_argument('--data_path_start', default='../root_place365_val_train1/', type=str)
 parser.add_argument('--data_path_end', default='../root_place365_val_train2/', type=str)
 parser.add_argument('--load_path', default=None, type=str)
