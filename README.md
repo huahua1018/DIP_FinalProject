@@ -41,3 +41,5 @@ Some common applications of reflection removal include:
 
 
 ## Experiment results
+
+![Experiment results](results.png)
