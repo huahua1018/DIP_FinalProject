@@ -565,7 +565,7 @@ class Dataset(data.Dataset):
             # transforms.Resize((int(image_size*1.12), int(image_size*1.12))),
             # transforms.CenterCrop(image_size),
             transforms.ToTensor(),
-            transforms.Lambda(lambda t: (t * 2) - 1)
+            transforms.Lambda(lambda t: (t * 2) - 1) #[0.0, 1.0] to [-1.0, 1.0]
         ])
 
     def __len__(self):
@@ -856,9 +856,8 @@ class Trainer(object):
                 utils.save_image((all_images[i] + 1) * 0.5,
                                  str(f'{out_folder}/' + f'sample-x0-{cnt}.png'))
                 utils.save_image((gt[i] + 1) * 0.5, str(f'{out_folder}/' + f'sample-gt-{cnt}.png'))
-                # utils.save_image((xt[i] + 1) * 0.5,
-                #                  str(f'{out_folder}/' + f'sample-xt-{cnt}.png'))
-                #
+                utils.save_image((xt[i] + 1) * 0.5,
+                                 str(f'{out_folder}/' + f'sample-xt-{cnt}.png'))
                 utils.save_image((direct_recons[i] + 1) * 0.5,
                                  str(f'{out_folder}/' + f'sample-direct-{cnt}.png'))
 

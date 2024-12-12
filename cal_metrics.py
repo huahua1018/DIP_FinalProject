@@ -82,10 +82,10 @@ def save_metrics_to_csv(metrics, filename="metrics_list.csv"):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--root_gt', '-r_gt', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500', type = str)         #TODO: change this to gt image dir path
-parser.add_argument('--root_recon', '-r_recon', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500', type = str)   #TODO: change this to recon image dir path
+parser.add_argument('--root_gt', '-r_gt', default='./reflection-diffusion-pytorch/results_out_0.3_l1_200_45000', type = str)         #TODO: change this to gt image dir path
+parser.add_argument('--root_recon', '-r_recon', default='./reflection-diffusion-pytorch/results_out_0.3_l1_200_45000', type = str)   #TODO: change this to recon image dir path
 parser.add_argument('--direct', '-d', default=False, type = bool)
-parser.add_argument('--output_filename', '-o', default='./reflection-diffusion-pytorch/results_out_0.4_l2_500/metrics_list.csv', type = str)                        #TODO: change this to output path + filename
+parser.add_argument('--output_filename', '-o', default='./reflection-diffusion-pytorch/results_out_0.3_l1_200_45000/metrics_list.csv', type = str)                        #TODO: change this to output path + filename
 args = parser.parse_args()
 root_gt_path = args.root_gt
 root_recon_path = args.root_recon

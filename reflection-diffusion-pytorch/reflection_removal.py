@@ -22,9 +22,9 @@ def del_folder(path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--time_steps', default=100, type=int)
+parser.add_argument('--time_steps', default=200, type=int)
 parser.add_argument('--train_steps', default=45000, type=int)
-parser.add_argument('--save_folder', default='./results_0.3_l2_100_45000', type=str)
+parser.add_argument('--save_folder', default='./results_0.3_l1_200_45000', type=str)
 parser.add_argument('--data_path_start', default='../root_place365_val_train1/', type=str)
 parser.add_argument('--data_path_end', default='../root_place365_val_train2/', type=str)
 parser.add_argument('--load_path', default=None, type=str)
@@ -32,7 +32,7 @@ parser.add_argument('--train_routine', default='Final', type=str)
 parser.add_argument('--sampling_routine', default='x0_step_down', type=str)
 parser.add_argument('--remove_time_embed', action="store_true")
 parser.add_argument('--residual', action="store_true")
-parser.add_argument('--loss_type', default='l2', type=str)
+parser.add_argument('--loss_type', default='l1', type=str)
 
 
 args = parser.parse_args()
