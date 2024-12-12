@@ -14,8 +14,9 @@ Inspired by the [Cold-Diffusion](https://github.com/arpitbansal297/Cold-Diffusio
 - **`Cold-Diffusion-Models-main/`**: Original Cold-Diffusion code.
 - **`ReflectionSeparation-master/`**: Baseline code for reflection separation.
 
+## Setup and Preparation Process
+### Step 1 : Environment Setup
 
-## Environment
 ### 1. Use conda (Optimal)
 ```
 conda env create -f requirements.yml 
@@ -25,6 +26,12 @@ conda env create -f requirements.yml
 ```
 pip install -r environment.txt
 ```
+
+### Step 2 : Dataset Preparation
+
+Download the [SIR2](https://sir2data.github.io/) dataset and place it in the `data/SIR2` folder.
+
+Then, run the command `python create_data.py`.
 
 ## Hyperparameters
 
