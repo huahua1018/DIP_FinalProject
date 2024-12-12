@@ -5,6 +5,12 @@
 ### Motivation
 When photographing objects behind glass, ambient light or other interference often reflects on the glass surface, which negatively affects image quality and visibility. Removing these reflections, or dereflection, enhances image clarity, enabling more accurate object recognition and improved background segmentation for various applications.
 
+Reflection removal is a crucial task in various computer vision and image processing applications. 
+Some common applications of reflection removal include:
+
+* **Autonomous driving** : Removing reflections from windshield or window images enhances the clarity and accuracy of scene understanding, ensuring safer navigation.
+* **Medical image analysis** : Eliminating reflections from imaging devices or glass barriers improves the visibility of critical details, facilitating more accurate diagnoses and evaluations.
+
 ### Method
 Inspired by the [Cold-Diffusion](https://github.com/arpitbansal297/Cold-Diffusion-Models) framework, which replaces noise-based destruction in diffusion models with deterministic transformations, we adapt this approach to better suit the requirements of dereflection.
 
@@ -33,7 +39,7 @@ Download the [SIR2](https://sir2data.github.io/) dataset and place it in the `da
 
 Then, run the command `python create_data.py`.
 
-## Execution
+## Usage
 ### Hyperparameters
 
 * β : 0.3
@@ -65,11 +71,4 @@ python reflection_removal_test.py --save_folder <Path to save images> --load_pat
 ## Experiment results
 
 ![Experiment results](results.png)
-
-## Usage
-Reflection removal is a crucial task in various computer vision and image processing applications. 
-Some common applications of reflection removal include:
-
-* **Autonomous driving** : Removing reflections from windshield or window images enhances the clarity and accuracy of scene understanding, ensuring safer navigation.
-* **Medical image analysis** : Eliminating reflections from imaging devices or glass barriers improves the visibility of critical details, facilitating more accurate diagnoses and evaluations.
   
