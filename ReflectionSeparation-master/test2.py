@@ -49,7 +49,7 @@ def test(model, criterion, path):
     losses = []
     model.eval()
     step = 0
-    for i in range(0,150,15):
+    for i in range(498,499):
         img = Image.open('{}/{}.png'.format('../root_SIR2_test', i))
         img = img.convert('RGB')
         img = np.array(img)
@@ -111,8 +111,8 @@ def test(model, criterion, path):
         cv2.imwrite(path + "/predict_transmission" + str(i) + ".png", 
                 (cv2.cvtColor((np.transpose(predict_transmission[0].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)))
 
-        cv2.imwrite(path + "/target_transmission" + str(i) + ".png", 
-                (cv2.cvtColor((np.transpose(target_transmission[0].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)))
+        # cv2.imwrite(path + "/target_transmission" + str(i) + ".png", 
+        #         (cv2.cvtColor((np.transpose(target_transmission[0].detach().cpu().numpy(), (1, 2, 0)) * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)))
         # ---------------------------------------------------------
         
             # ---------------------------------------------------------
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     # test_loader = dtst.DataLoader(data, 1, 11, test=True)# TODO　亂數每次都找９個　所以這邊先18->11
 
     #net = NetArticle()
-    net = th.load("first_test.hdf5") # TODO
+    net = th.load("s_test.hdf5") # TODO
     # print(net)
     criterion = nn.MSELoss()
     losses = test(net, criterion, path)
