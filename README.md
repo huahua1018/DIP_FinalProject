@@ -54,6 +54,8 @@ python reflection_removal.py --save_folder <Path to save images>
 
 ### Test
 
+You can download our model weights [here](https://drive.google.com/file/d/1h5xB0APiZVwZLunLkDf2uFQNn3l6olDh/view?usp=sharing).
+
 ```
 python reflection_removal_test.py --save_folder <Path to save images> --load_path <Path to load model>                
 ```
