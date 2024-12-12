@@ -71,4 +71,3 @@ python reflection_removal_test.py --save_folder <Path to save images> --load_pat
 ## Experiment results
 
 ![Experiment results](results.png)
-  
