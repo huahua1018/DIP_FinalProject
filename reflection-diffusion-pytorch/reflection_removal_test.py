@@ -22,7 +22,7 @@ def del_folder(path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--time_steps', default=200, type=int)
+parser.add_argument('--time_steps', default=100, type=int)
 parser.add_argument('--train_steps', default=45000, type=int)
 parser.add_argument('--save_folder', default='./results', type=str)
 parser.add_argument('--data_path_start', default='../root_SIR2_test/', type=str) # TODO: change to the path of the testing data
@@ -32,7 +32,7 @@ parser.add_argument('--train_routine', default='Final', type=str)
 parser.add_argument('--sampling_routine', default='default', type=str)
 parser.add_argument('--remove_time_embed', action="store_true")
 parser.add_argument('--residual', action="store_true")
-parser.add_argument('--loss_type', default='l1', type=str)
+parser.add_argument('--loss_type', default='l2', type=str)
 parser.add_argument('--test_type', default='test_sample_and_save_for_fid', type=str)
 parser.add_argument('--noise', default=0, type=float)
 
